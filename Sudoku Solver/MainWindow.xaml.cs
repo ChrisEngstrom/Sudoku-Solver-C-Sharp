@@ -18,7 +18,8 @@ namespace Sudoku_Solver {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        const int SQUARE_SIZE = 50;
+        const int GRID_SIZE = 3,
+                  SQUARE_SIZE = 50;
 
         public MainWindow() {
             InitializeComponent();
@@ -29,53 +30,44 @@ namespace Sudoku_Solver {
         }
 
         private void GenerateControls() {
-            for ( int row = 0; row < 9; row++ ) {
-                for ( int col = 0; col < 9; col++ ) {
-                    AddTextBox( row, col );
+            // Add 9 inner grids
+            for ( int i = 0; i < GRID_SIZE * GRID_SIZE; i++ ) {
+                WrapPanel innerGrid = new WrapPanel();
+                Border innerGridBorder = new Border();
+
+                innerGridBorder.Width = 154;
+                innerGridBorder.Height = 154;
+                innerGridBorder.BorderThickness = new Thickness( 2 );
+                innerGridBorder.BorderBrush = Brushes.Black;
+
+                // Add 9 cells to each inner grid
+                for ( int col = 0; col < GRID_SIZE; col++ ) {
+                    for ( int row = 0; row < GRID_SIZE; row++ ) {
+                        innerGrid.Children.Add( GenerateTextBox( row, col ) );
+                    }
                 }
+
+                innerGridBorder.Child = innerGrid;
+                GameBoard.Children.Add( innerGridBorder );
             }
         }
 
-        private void AddTextBox( int row, int col ) {
+        private TextBox GenerateTextBox( int row, int col ) {
             TextBox textBox = new TextBox();
-            textBox.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-            textBox.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
-            textBox.FontSize = 28;
-            textBox.FontWeight = FontWeights.Bold;
-            textBox.Text = row + "," + col;
             textBox.Width = SQUARE_SIZE;
             textBox.Height = SQUARE_SIZE;
-            textBox.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            textBox.FontSize = 28;
+            textBox.FontWeight = FontWeights.Bold;
+            textBox.BorderBrush = Brushes.DimGray;
+
             textBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            textBox.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+            textBox.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            textBox.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
 
-            Thickness margin = textBox.Margin;
-            margin.Left = row * SQUARE_SIZE;
-            margin.Top = col * SQUARE_SIZE;
-            textBox.Margin = margin;
+            textBox.Text = ((col * GRID_SIZE + row) + 1).ToString();
 
-            Border border = new Border();
-            border.CornerRadius = new CornerRadius( 0 );
-
-            textBox.BorderThickness = new Thickness( 1, 1, 1, 1 );
-            textBox.BorderBrush = Brushes.Black;
-
-            if ( row == 2 || row == 5 ) {
-                textBox.BorderThickness = new Thickness( 1, 1, 5, 1 );
-                textBox.BorderBrush = Brushes.Black;
-            }
-
-            if ( col == 2 || col == 5 ) {
-                textBox.BorderThickness = new Thickness( 1, 1, 1, 5 );
-                textBox.BorderBrush = Brushes.Black;
-            }
-            
-            if ((row == 2 && col == 2) || (row == 2 && col == 5) ||
-                (row == 5 && col == 2) || (row == 5 && col == 5)) {
-                textBox.BorderThickness = new Thickness( 1, 1, 5, 5 );
-                textBox.BorderBrush = Brushes.Black;
-            }
-
-            GameBoard.Children.Add( textBox );
+            return textBox;
         }
     }
 }

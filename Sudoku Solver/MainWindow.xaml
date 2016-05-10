@@ -10,11 +10,13 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0"
-              Height="450"
+              Background="DimGray"
+              Height="462"
               Margin="10"
-              Name="GameBoard"
               ShowGridLines="True"
-              Width="450" />
+              Width="462" >
+            <WrapPanel Name="GameBoard" />
+        </Grid>
 
         <GroupBox Grid.Column="1"
                   Header="Actions"
